@@ -442,7 +442,7 @@ Qt 5 plugin for integration with flatpak and snap.
 ##### Build section
 
 %prep
-%setup -q -n qt5-%{version}/upstream
+%setup -q -n %{name}-%{version}/upstream
 
 %build
 touch .git
