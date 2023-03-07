@@ -4,6 +4,7 @@
 # installed-but-unpackaged static libs.
 # This flag tells rpmbuild to behave.
 %define keepstatic 1
+%define _prefix /home/.system/opt/qt5/
 
 # Version is the date of latest commit in qtbase, followed by 'g' + few
 # characters of the last git commit ID.
@@ -11,9 +12,9 @@
 # make sense. This allows to update spec contents easily as snapshots
 # evolve.
 
-Name:       qt5
+Name:       qt5-lgpl
 Summary:    Cross-platform application and UI framework
-Version:    5.15.5
+Version:    5.15.8
 Release:    1%{?dist}
 License:    LGPLv2 with exception or LGPLv3 or GPLv3 or Qt Commercial
 URL:        https://www.qt.io/
@@ -176,6 +177,14 @@ Requires:   %{name}-qtcore = %{version}-%{release}
 %description plugin-platform-linuxfb
 This package contains the linuxfb platform plugin for Qt
 
+%package plugin-platform-vnc
+Summary:    VNC platform plugin
+Requires:   %{name}-qtcore = %{version}-%{release}
+
+%description plugin-platform-vnc
+This package contains the vnc platform plugin for Qt
+
+
 %package plugin-printsupport-cups
 Summary:    CUPS print support plugin
 Requires:   %{name}-qtcore = %{version}-%{release}
@@ -189,14 +198,6 @@ Requires:   %{name}-qtcore = %{version}-%{release}
 
 %description plugin-sqldriver-sqlite
 This package contains the sqlite sql driver plugin
-
-
-%package plugin-platforminputcontext-ibus
-Summary:    ibus platform import context plugin
-Requires:   %{name}-qtcore = %{version}-%{release}
-
-%description plugin-platforminputcontext-ibus
-This package contains the ibus platform input context plugin
 
 %package plugin-generic-evdev
 Summary:    evdev generic plugin
@@ -427,12 +428,21 @@ embedded operating systems without rewriting the source code.
 
 This package contains the Qt5 development defaults package
 
+%package platformtheme-xdgdesktopportal
+Summary:        Qt 5 XDG Desktop Portal Plugin
+Group:          Development/Libraries/C and C++
+Requires:       %{name}-qtcore = %{version}-%{release}
+Obsoletes:      %{name}-platformtheme-flatpak < %{version}
+Provides:       %{name}-platformtheme-flatpak = %{version}
+
+%description platformtheme-xdgdesktopportal
+Qt 5 plugin for integration with flatpak and snap.
 
 
 ##### Build section
 
 %prep
-%setup -q -n qt5-%{version}
+%setup -q -n qt5-%{version}/upstream
 
 %build
 touch .git
@@ -468,29 +478,23 @@ MAKEFLAGS=%{?_smp_mflags} \
     -no-sql-sqlite2 \
     -no-sql-tds \
     -system-sqlite \
-    -audio-backend \
     -system-zlib \
     -system-libpng \
     -system-libjpeg \
     -system-proxies \
-    -no-rpath \
     -optimized-qmake \
     -dbus-linked \
     -openssl-linked \
     -no-strip \
     -no-separate-debug-info \
     -verbose \
-    -no-gtkstyle \
     -opengl es2 \
     -no-openvg \
-    -lfontconfig \
     -I/usr/include/freetype2 \
     -nomake tests \
     -nomake examples \
     -no-xkbcommon \
     -no-xcb \
-    -no-xinput2 \
-    -largefile \
 %ifarch aarch64
 	-no-pch \
 %endif
@@ -512,7 +516,7 @@ make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
-%make_install
+RPM_INSTALL_PREFIX=%{_prefix} %make_install
 #
 # We don't need qt5/Qt/
 rm -rf %{buildroot}/%{_includedir}/qt5/Qt
@@ -604,11 +608,14 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_libdir}/qt5/bin/uic
 %{_libdir}/qt5/bin/qlalr
 %{_libdir}/qt5/bin/fixqt4headers.pl
+%{_libdir}/qt5/bin/qvkgen
+%{_libdir}/qt5/bin/tracegen
 %{_docdir}/qt5/*
+
 
 %files qtcore
 %defattr(-,root,root,-)
-%license LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt LICENSE.GPLv3
+%license LICENSE.LGPLv3
 %dir %{_includedir}/qt5/
 %dir %{_datadir}/qt5/
 %dir %{_libdir}/qt5/
@@ -630,6 +637,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_datadir}/qt5/mkspecs/modules/qt_lib_core_private.pri
 %{_libdir}/cmake/Qt5
 %{_libdir}/cmake/Qt5Core
+%{_libdir}/metatypes/qt5core_metatypes.json
 
 %files qmake
 %defattr(-,root,root,-)
@@ -639,17 +647,14 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %endif
 %{_datadir}/qt5/mkspecs/aix-*/
 %{_datadir}/qt5/mkspecs/android-clang/*
-%{_datadir}/qt5/mkspecs/blackberry*/
 %{_datadir}/qt5/mkspecs/common/
 %{_datadir}/qt5/mkspecs/cygwin-*/
 %{_datadir}/qt5/mkspecs/darwin-*/
 %{_datadir}/qt5/mkspecs/features/
 %{_datadir}/qt5/mkspecs/freebsd-*/
 %{_datadir}/qt5/mkspecs/haiku-g++/
-%{_datadir}/qt5/mkspecs/hpux-*
 %{_datadir}/qt5/mkspecs/hpuxi-*
 %{_datadir}/qt5/mkspecs/hurd-g++/
-%{_datadir}/qt5/mkspecs/irix-*/
 %{_datadir}/qt5/mkspecs/linux-*/
 %{_datadir}/qt5/mkspecs/lynxos-*/
 %{_datadir}/qt5/mkspecs/macx-*/
@@ -658,20 +663,24 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_datadir}/qt5/mkspecs/qconfig.pri
 %{_datadir}/qt5/mkspecs/qmodule.pri
 %{_datadir}/qt5/mkspecs/qnx*/
-%{_datadir}/qt5/mkspecs/sco-*/
 %{_datadir}/qt5/mkspecs/solaris-*/
-%{_datadir}/qt5/mkspecs/tru64-*/
-%{_datadir}/qt5/mkspecs/unixware-*/
 %{_datadir}/qt5/mkspecs/unsupported/
 %{_datadir}/qt5/mkspecs/win32-g++/
 %{_datadir}/qt5/mkspecs/win32-icc/
-%{_datadir}/qt5/mkspecs/win32-msvc20*/
-%{_datadir}/qt5/mkspecs/wince*/
-%{_datadir}/qt5/mkspecs/winphone*/
 %{_datadir}/qt5/mkspecs/winrt*/
 %{_datadir}/qt5/mkspecs/devices/
+%{_datadir}/qt5/mkspecs/dummy/
+%{_datadir}/qt5/mkspecs/integrity-armv7-imx6/
+%{_datadir}/qt5/mkspecs/integrity-armv7/
+%{_datadir}/qt5/mkspecs/integrity-armv8-rcar/
+%{_datadir}/qt5/mkspecs/integrity-x86/
 %{_datadir}/qt5/mkspecs/qdevice.pri
-%{_datadir}/qt5/mkspecs/qfeatures.pri
+%{_datadir}/qt5/mkspecs/wasm-emscripten/
+%{_datadir}/qt5/mkspecs/win32-arm64-msvc2017/
+%{_datadir}/qt5/mkspecs/win32-clang-g++/
+%{_datadir}/qt5/mkspecs/win32-clang-msvc/
+%{_datadir}/qt5/mkspecs/win32-icc-k1om/
+%{_datadir}/qt5/mkspecs/win32-msvc/
 %config %{_sysconfdir}/rpm/macros.qt5-default
 
 %files qtdbus
@@ -695,9 +704,9 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %files qtgui
 %defattr(-,root,root,-)
 %dir %{_libdir}/qt5/plugins/imageformats/
-%dir %{_libdir}/qt5/plugins/platforminputcontexts/
 %{_libdir}/libQt5Gui.so.*
-
+%{_libdir}/libQt5EglFSDeviceIntegration.so.*
+%{_libdir}/libQt5EglFsKmsSupport.so.*
 
 %files qtgui-devel
 %defattr(-,root,root,-)
@@ -709,7 +718,14 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_datadir}/qt5/mkspecs/modules/qt_lib_gui.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_gui_private.pri
 %{_libdir}/cmake/Qt5Gui
-
+%{_includedir}/qt5/QtEglFSDeviceIntegration/
+%{_libdir}/libQt5EglFSDeviceIntegration.so
+%{_libdir}/libQt5EglFSDeviceIntegration.prl
+%{_libdir}/cmake/Qt5EglFSDeviceIntegration/
+%{_libdir}/libQt5EglFsKmsSupport.prl
+%{_libdir}/libQt5EglFsKmsSupport.so
+%{_libdir}/cmake/Qt5EglFsKmsSupport/
+%{_libdir}/metatypes/qt5gui_metatypes.json
 
 %files qtnetwork
 %defattr(-,root,root,-)
@@ -745,8 +761,6 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_libdir}/pkgconfig/Qt5OpenGLExtensions.pc
 %{_datadir}/qt5/mkspecs/modules/qt_lib_opengl.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_opengl_private.pri
-%{_datadir}/qt5/mkspecs/android-g++/qmake.conf
-%{_datadir}/qt5/mkspecs/android-g++/qplatformdefs.h
 %{_datadir}/qt5/mkspecs/modules/qt_lib_openglextensions.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri
 %{_libdir}/cmake/Qt5OpenGL
@@ -811,13 +825,74 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_datadir}/qt5/mkspecs/modules/qt_lib_widgets.pri
 %{_datadir}/qt5/mkspecs/modules/qt_lib_widgets_private.pri
 %{_libdir}/cmake/Qt5Widgets
+%{_libdir}/metatypes/qt5widgets_metatypes.json
 
 %files qtplatformsupport-devel
 %defattr(-,root,root,-)
-%{_includedir}/qt5/QtPlatformSupport/
-%{_libdir}/libQt5PlatformSupport.prl
-%{_libdir}/libQt5PlatformSupport.a
-%{_datadir}/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri
+%doc *.txt
+%{_libdir}/libQt5AccessibilitySupport.a
+%{_libdir}/libQt5AccessibilitySupport.prl
+%{_libdir}/cmake/Qt5AccessibilitySupport/
+%{_libdir}/libQt5DeviceDiscoverySupport.a
+%{_libdir}/libQt5DeviceDiscoverySupport.prl
+%{_libdir}/cmake/Qt5DeviceDiscoverySupport/
+%{_libdir}/libQt5EglSupport.a
+%{_libdir}/libQt5EglSupport.prl
+%{_libdir}/cmake/Qt5EglSupport/
+%{_libdir}/libQt5EventDispatcherSupport.a
+%{_libdir}/libQt5EventDispatcherSupport.prl
+%{_libdir}/cmake/Qt5EventDispatcherSupport/
+%{_libdir}/libQt5FbSupport.a
+%{_libdir}/libQt5FbSupport.prl
+%{_libdir}/cmake/Qt5FbSupport/
+%{_libdir}/libQt5FontDatabaseSupport.a
+%{_libdir}/libQt5FontDatabaseSupport.prl
+%{_libdir}/cmake/Qt5FontDatabaseSupport/
+%{_libdir}/libQt5InputSupport.a
+%{_libdir}/libQt5InputSupport.prl
+%{_libdir}/cmake/Qt5InputSupport/
+%{_libdir}/libQt5PlatformCompositorSupport.a
+%{_libdir}/libQt5PlatformCompositorSupport.prl
+%{_libdir}/cmake/Qt5PlatformCompositorSupport/
+%{_libdir}/libQt5ServiceSupport.a
+%{_libdir}/libQt5ServiceSupport.prl
+%{_libdir}/cmake/Qt5ServiceSupport/
+%{_libdir}/libQt5ThemeSupport.a
+%{_libdir}/libQt5ThemeSupport.prl
+%{_libdir}/cmake/Qt5ThemeSupport/
+%{_libdir}/libQt5EdidSupport.a
+%{_libdir}/libQt5EdidSupport.prl
+%{_libdir}/cmake/Qt5EdidSupport/
+%{_libdir}/cmake/Qt5EdidSupport/
+%{_libdir}/libQt5KmsSupport.a
+%{_libdir}/libQt5KmsSupport.prl
+%{_libdir}/cmake/Qt5KmsSupport
+%{_includedir}/qt5/QtAccessibilitySupport/
+%{_includedir}/qt5/QtDeviceDiscoverySupport/
+%{_includedir}/qt5/QtEglSupport/
+%{_includedir}/qt5/QtEventDispatcherSupport/
+%{_includedir}/qt5/QtFbSupport/
+%{_includedir}/qt5/QtFontDatabaseSupport/
+%{_includedir}/qt5/QtInputSupport/
+%{_includedir}/qt5/QtPlatformCompositorSupport/
+%{_includedir}/qt5/QtServiceSupport/
+%{_includedir}/qt5/QtThemeSupport/
+%{_includedir}/qt5/QtEdidSupport/
+%{_includedir}/qt5/QtKmsSupport
+%{_datadir}/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_devicediscovery_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_edid_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_egl_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_eglfsdeviceintegration_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_fb_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_fontdatabase_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_input_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_kms_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_platformcompositor_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_service_support_private.pri
+%{_datadir}/qt5/mkspecs/modules/qt_lib_theme_support_private.pri
 
 %files qtbootstrap-devel
 %defattr(-,root,root,-)
@@ -853,9 +928,6 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %{_datadir}/qt5/mkspecs/modules/qt_lib_concurrent_private.pri
 %{_libdir}/cmake/Qt5Concurrent
 
-
-
-
 %files plugin-bearer-connman
 %defattr(-,root,root,-)
 %{_libdir}/qt5/plugins/bearer/libqconnmanbearer.so
@@ -890,15 +962,13 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 
 %files plugin-platform-eglfs
 %defattr(-,root,root,-)
-%{_libdir}/libQt5EglDeviceIntegration.so*
-%{_libdir}/libQt5EglDeviceIntegration.prl
 %{_libdir}/qt5/plugins/platforms/libqeglfs.so
 %if %{with X11}
 %{_libdir}/qt5/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
 %endif
+%{_libdir}/qt5/plugins/egldeviceintegrations/libqeglfs-emu-integration.so
 %{_libdir}/qt5/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
 %{_libdir}/qt5/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
-%{_datadir}/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri
 
 %files plugin-platform-minimalegl
 %defattr(-,root,root,-)
@@ -908,6 +978,10 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %defattr(-,root,root,-)
 %{_libdir}/qt5/plugins/platforms/libqlinuxfb.so
 
+%files plugin-platform-vnc
+%defattr(-,root,root,-)
+%{_libdir}/qt5/plugins/platforms/libqvnc.so
+
 %files plugin-printsupport-cups
 %defattr(-,root,root,-)
 %{_libdir}/qt5/plugins/printsupport/libcupsprintersupport.so
@@ -915,10 +989,6 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %files plugin-sqldriver-sqlite
 %defattr(-,root,root,-)
 %{_libdir}/qt5/plugins/sqldrivers/libqsqlite.so
-
-%files plugin-platforminputcontext-ibus
-%defattr(-,root,root,-)
-%{_libdir}/qt5/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 
 %files plugin-generic-evdev
 %defattr(-,root,root,-)
@@ -931,5 +1001,9 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %files -n qt5-default
 %defattr(-,root,root,-)
 %{_sysconfdir}/xdg/qtchooser/default.conf
+
+%files platformtheme-xdgdesktopportal
+%defattr(-,root,root,-)
+%{_libdir}/qt5/plugins/platformthemes/libqxdgdesktopportal.so
 
 #### No changelog section, separate $pkg.changes contains the history
