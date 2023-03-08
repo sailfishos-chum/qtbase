@@ -644,7 +644,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515
 %files qmake
 %defattr(-,root,root,-)
 %{_libdir}/qt5/bin/qmake
-%if "%{_libdir}" == "/usr/lib64"
+%if "%{_libdir}" == "%{_prefix}/lib64"
 %{_libdir}/qt5/bin/qt515.conf
 %endif
 %{_datadir}/qt5/mkspecs/aix-*/
