@@ -645,7 +645,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515
 %defattr(-,root,root,-)
 %{_libdir}/qt5/bin/qmake
 %if "%{_libdir}" == "/usr/lib64"
-%{_libdir}/qt5/bin/qt.conf
+%{_libdir}/qt5/bin/qt515.conf
 %endif
 %{_datadir}/qt5/mkspecs/aix-*/
 %{_datadir}/qt5/mkspecs/android-clang/*
@@ -864,7 +864,6 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515
 %{_libdir}/cmake/Qt5ThemeSupport/
 %{_libdir}/libQt5EdidSupport.a
 %{_libdir}/libQt5EdidSupport.prl
-%{_libdir}/cmake/Qt5EdidSupport/
 %{_libdir}/cmake/Qt5EdidSupport/
 %{_libdir}/libQt5KmsSupport.a
 %{_libdir}/libQt5KmsSupport.prl
