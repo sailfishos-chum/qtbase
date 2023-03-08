@@ -535,6 +535,7 @@ find %{buildroot}%{_libdir} -type f -name "*_*Plugin.cmake" \
 find %{buildroot}%{_docdir}/qt5/ -type f -exec chmod ugo-x {} \;
 
 # Make sure these are around
+mkdir -p %{buildroot}%{_prefix}
 mkdir -p %{buildroot}%{_includedir}/qt5/
 mkdir -p %{buildroot}%{_datadir}/qt5/
 mkdir -p %{buildroot}%{_libdir}/qt5/plugins/
@@ -548,11 +549,11 @@ install -D -p -m 0644 %{_sourcedir}/macros.qt5-default \
 
 # Add a configuration link for qtchooser - the 5.conf is installed by qtchooser
 mkdir -p %{buildroot}/etc/xdg/qtchooser
-ln -s %{_sysconfdir}/xdg/qtchooser/5.conf %{buildroot}%{_sysconfdir}/xdg/qtchooser/default.conf
+#ln -s %{_sysconfdir}/xdg/qtchooser/5.conf %{buildroot}%{_prefix}%{_sysconfdir}/xdg/qtchooser/default.conf
 
 # Help accelerated qmake find the configuration
-%if "%{_libdir}" == "/usr/lib64"
-install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.conf
+%if "%{_libdir}" == "%{_prefix}/lib64"
+install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515.conf
 %endif
 
 #
@@ -616,6 +617,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt.co
 %files qtcore
 %defattr(-,root,root,-)
 %license LICENSE.LGPLv3
+%dir %{_prefix}
 %dir %{_includedir}/qt5/
 %dir %{_datadir}/qt5/
 %dir %{_libdir}/qt5/
