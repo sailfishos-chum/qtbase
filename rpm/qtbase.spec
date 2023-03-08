@@ -1002,7 +1002,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515
 
 %files -n qt5-default
 %defattr(-,root,root,-)
-%{_sysconfdir}/xdg/qtchooser/default.conf
+#{_sysconfdir}/xdg/qtchooser/default.conf
 
 %files platformtheme-xdgdesktopportal
 %defattr(-,root,root,-)
