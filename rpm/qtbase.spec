@@ -4,7 +4,7 @@
 # installed-but-unpackaged static libs.
 # This flag tells rpmbuild to behave.
 %define keepstatic 1
-%define _prefix /home/.system/opt/qt5/
+%define _prefix /opt/qt5/
 
 # Version is the date of latest commit in qtbase, followed by 'g' + few
 # characters of the last git commit ID.
