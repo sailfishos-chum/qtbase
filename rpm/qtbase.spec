@@ -500,9 +500,6 @@ MAKEFLAGS=%{?_smp_mflags} \
 %endif
     -kms \
     -gbm \
-%ifnarch aarch64
-    -qreal float \
-%endif
     -journald \
     -no-use-gold-linker \
     -openssl-linked
