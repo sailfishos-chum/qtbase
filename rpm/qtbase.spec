@@ -463,7 +463,7 @@ MAKEFLAGS=%{?_smp_mflags} \
     -plugindir "%{_libdir}/qt5/plugins" \
     -importdir "%{_libdir}/qt5/imports" \
     -translationdir "%{_datadir}/qt5/translations" \
-    -sysconfdir "%{_sysconfdir}/xdg" \
+    -sysconfdir "%{_prefix}%{_sysconfdir}/xdg" \
     -examplesdir "%{_libdir}/qt5/examples" \
     -archdatadir "%{_datadir}/qt5" \
     -testsdir "%{_libdir}/qt5/tests" \
@@ -500,9 +500,6 @@ MAKEFLAGS=%{?_smp_mflags} \
 %endif
     -kms \
     -gbm \
-%ifnarch aarch64
-    -qreal float \
-%endif
     -journald \
     -no-use-gold-linker \
     -openssl-linked
@@ -545,7 +542,7 @@ mkdir -p %{buildroot}%{_libdir}/qt5/examples/
 #
 # Install qmake rpm macros
 install -D -p -m 0644 %{_sourcedir}/macros.qt5-default \
-%{buildroot}/%{_sysconfdir}/rpm/macros.qt5-default
+%{buildroot}/%{_prefix}%{_sysconfdir}/rpm/macros.qt5-default
 
 # Add a configuration link for qtchooser - the 5.conf is installed by qtchooser
 mkdir -p %{buildroot}/etc/xdg/qtchooser
@@ -683,7 +680,7 @@ install -D -p -m 0644 %{_sourcedir}/qt.conf %{buildroot}%{_libdir}/qt5/bin/qt515
 %{_datadir}/qt5/mkspecs/win32-clang-msvc/
 %{_datadir}/qt5/mkspecs/win32-icc-k1om/
 %{_datadir}/qt5/mkspecs/win32-msvc/
-%config %{_sysconfdir}/rpm/macros.qt5-default
+%config %{_prefix}%{_sysconfdir}/rpm/macros.qt5-default
 
 %files qtdbus
 %defattr(-,root,root,-)
