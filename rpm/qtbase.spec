@@ -495,6 +495,8 @@ MAKEFLAGS=%{?_smp_mflags} \
     -nomake examples \
     -no-xkbcommon \
     -no-xcb \
+    -fontconfig \
+	-system-freetype \
 %ifarch aarch64
 	-no-pch \
 %endif
