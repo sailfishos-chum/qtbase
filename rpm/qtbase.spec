@@ -171,14 +171,9 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
  bin/syncqt.pl \
  mkspecs/features/data/unix/findclasslist.pl
 
+chmod -R ugo+r upstream
 
 %build
-# QT is known not to work properly with LTO at this point.  Some of the issues
-# are being worked on upstream and disabling LTO should be re-evaluated as
-# we update this change.  Until such time...
-# Disable LTO
-# https://bugzilla.redhat.com/1900527
-%define _lto_cflags %{nil}
 
 ./configure \
   -verbose \
