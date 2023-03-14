@@ -66,12 +66,6 @@ BuildRequires: opt-qt5-rpm-macros
 
 Requires: %{name}-common = %{version}-%{release}
 
-## Sql drivers
-%if 0%{?rhel}
-%global ibase -no-sql-ibase
-%global tds -no-sql-tds
-%endif
-
 # workaround gold linker bug(s) by not using it
 # https://bugzilla.redhat.com/1458003
 # https://sourceware.org/bugzilla/show_bug.cgi?id=21074
@@ -90,12 +84,6 @@ Summary: Common files for Qt5
 # offer upgrade path for qtquick1 somewhere... may as well be here -- rex
 Obsoletes: opt-qt5-qtquick1 < 5.9.0
 Obsoletes: opt-qt5-qtquick1-devel < 5.9.0
-%if "%{?ibase}" == "-no-sql-ibase"
-Obsoletes: opt-qt5-qtbase-ibase < %{version}-%{release}
-%endif
-%if "%{?tds}" == "-no-sql-tds"
-Obsoletes: opt-qt5-qtbase-tds < %{version}-%{release}
-%endif
 Requires: %{name} = %{version}-%{release}
 BuildArch: noarch
 %description common
@@ -113,9 +101,6 @@ Requires: pkgconfig(glesv2)
 Requires: pkgconfig(vulkan)
 %endif
 Requires: opt-qt5-rpm-macros
-%if 0%{?use_clang}
-Requires: clang >= 3.7.0
-%endif
 %description devel
 %{summary}.
 
@@ -220,7 +205,6 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
   %{?egl:-egl -eglfs} \
   -fontconfig \
   -glib \
-  %{?ibase} \
   -icu \
   -journald \
   -openssl-linked \
@@ -235,26 +219,14 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
   -system-libpng \
   %{?harfbuzz} \
   %{?sqlite} \
-  %{?tds} \
   -system-zlib \
   %{?use_gold_linker} \
   -no-xkbcommon \
   -no-xcb \
   -no-directfb \
-  -no-feature-relocatable \
-  QMAKE_CFLAGS_RELEASE="${CFLAGS:-$RPM_OPT_FLAGS}" \
-  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-$RPM_OPT_FLAGS}" \
-  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-$RPM_LD_FLAGS}"
+  -no-feature-relocatable
 
-# ensure qmake build using optflags (which can happen if not munging qmake.conf defaults)
-make clean -C qmake
-%make_build -C qmake all binary \
-  QMAKE_CFLAGS_RELEASE="${CFLAGS:-$RPM_OPT_FLAGS}" \
-  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-$RPM_OPT_FLAGS}" \
-  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-$RPM_LD_FLAGS}" \
-  QMAKE_STRIP=
-
-%make_build
+make %{?_smp_mflags}
 
 
 %install
