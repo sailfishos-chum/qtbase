@@ -208,8 +208,8 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
   -icu \
   -journald \
   -openssl-linked \
-  %{!?examples:-nomake examples} \
-  %{!?tests:-nomake tests} \
+  -nomake examples \
+  -nomake tests \
   -no-pch \
   -no-reduce-relocations \
   -rpath \
