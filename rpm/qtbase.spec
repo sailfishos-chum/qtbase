@@ -171,7 +171,7 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
  bin/syncqt.pl \
  mkspecs/features/data/unix/findclasslist.pl
 
-chmod -R ugo+r upstream
+chmod -R ugo+r .
 
 %build
 
