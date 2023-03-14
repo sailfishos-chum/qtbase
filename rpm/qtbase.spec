@@ -13,8 +13,7 @@ Release: 6%{?dist}
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
-%global  majmin %(echo %{version} | cut -d. -f1-2)
-Source0: https://download.qt.io/official_releases/qt/%{majmin}/%{version}/submodules/%{qt_module}-everywhere-opensource-src-%{version}.tar.xz
+Source0: %{name}-%{version}.tar.bz2
 
 # macros
 Source10: macros.qt5-qtbase
@@ -53,7 +52,6 @@ BuildRequires: pkgconfig(libsystemd)
 %global egl 1
 BuildRequires: libEGL-devel
 BuildRequires: pkgconfig(gbm)
-## TODO: apparently only needed if building opengl_es2 support, do we actually use it?  -- rex
 BuildRequires: pkgconfig(glesv2)
 %global sqlite -system-sqlite
 BuildRequires: pkgconfig(sqlite3) >= 3.7
@@ -63,7 +61,6 @@ BuildRequires: pkgconfig(icu-i18n)
 BuildRequires: pkgconfig(zlib)
 BuildRequires: pkgconfig(libzstd)
 BuildRequires: perl
-# see patch68
 BuildRequires: python3-base
 BuildRequires: opt-qt5-rpm-macros
 
