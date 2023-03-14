@@ -174,9 +174,7 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
 %build
 
 ./configure \
-  -verbose \
   -confirm-license \
-  -opensource \
   -prefix %{_opt_qt5_prefix} \
   -archdatadir %{_opt_qt5_archdatadir} \
   -bindir %{_opt_qt5_bindir} \
@@ -191,33 +189,42 @@ sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
   -sysconfdir %{_opt_qt5_sysconfdir} \
   -translationdir %{_opt_qt5_translationdir} \
   -platform %{platform} \
-  -release \
-  -shared \
-  -opengl es2 \
-  -dbus-linked \
-  %{?egl:-egl -eglfs} \
-  -fontconfig \
-  -glib \
-  -icu \
-  -journald \
-  -openssl-linked \
-  -nomake examples \
-  -nomake tests \
-  -no-pch \
-  -no-reduce-relocations \
-  -rpath \
-  -no-separate-debug-info \
-  -no-strip \
-  -system-libjpeg \
-  -system-libpng \
-  %{?harfbuzz} \
-  %{?sqlite} \
-  -system-zlib \
-  %{?use_gold_linker} \
-  -no-xkbcommon \
-  -no-xcb \
-  -no-directfb \
-  -no-feature-relocatable
+    -opensource \
+    -no-sql-ibase \
+    -no-sql-mysql \
+    -no-sql-odbc \
+    -no-sql-psql \
+    -plugin-sql-sqlite \
+    -no-sql-sqlite2 \
+    -no-sql-tds \
+    -system-sqlite \
+    -system-zlib \
+    -system-libpng \
+    -system-libjpeg \
+    -system-proxies \
+    -optimized-qmake \
+    -dbus-linked \
+    -openssl-linked \
+    -no-strip \
+    -no-separate-debug-info \
+    -verbose \
+    -opengl es2 \
+    -no-openvg \
+    -I/usr/include/freetype2 \
+    -nomake tests \
+    -nomake examples \
+    -no-xkbcommon \
+    -no-xcb \
+    -fontconfig \
+	-system-freetype \
+%ifarch aarch64
+	-no-pch \
+%endif
+    -kms \
+    -gbm \
+    -journald \
+    -no-use-gold-linker \
+    -openssl-linked
 
 make %{?_smp_mflags}
 
