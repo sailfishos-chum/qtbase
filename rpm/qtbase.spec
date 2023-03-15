@@ -240,7 +240,7 @@ install -p -m644 -D %{SOURCE10} \
 sed -i \
   -e "s|@@NAME@@|%{name}|g" \
   -e "s|@@EPOCH@@|%{?epoch}%{!?epoch:0}|g" \
-  -e "s|@@VERSION@@|%{qt_version}|g" \
+  -e "s|@@VERSION@@|%{version}|g" \
   -e "s|@@EVR@@|%{?epoch:%{epoch:}}%{qt_version}-%{release}|g" \
   %{buildroot}%{rpm_macros_dir}/macros.qt5-qtbase
 
