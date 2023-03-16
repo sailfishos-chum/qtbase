@@ -53,15 +53,14 @@ BuildRequires: pkgconfig(libsystemd)
 #BuildRequires: pkgconfig(vulkan)
 BuildRequires: libEGL-devel
 BuildRequires: pkgconfig(glesv2)
-%global sqlite -system-sqlite
 BuildRequires: pkgconfig(sqlite3) >= 3.7
-%global harfbuzz -system-harfbuzz
 BuildRequires: pkgconfig(harfbuzz) >= 0.9.42
 BuildRequires: pkgconfig(icu-i18n)
 BuildRequires: pkgconfig(zlib)
 BuildRequires: pkgconfig(libzstd)
 BuildRequires: pkgconfig(gbm)
 BuildRequires: pkgconfig(libproxy-1.0)
+BuildRequires: pkgconfig(xkbcommon)
 BuildRequires: perl
 BuildRequires: python3-base
 BuildRequires: opt-qt5-rpm-macros
@@ -168,7 +167,6 @@ touch .git
   -no-sql-sqlite2 \
   -no-sql-tds \
   -no-use-gold-linker \
-  -no-xkbcommon \
   -no-xcb \
   -nomake examples \
   -nomake tests \
@@ -178,23 +176,18 @@ touch .git
   -gbm \
   -icu \
   -glib \
-  -journald \
   -kms \
   -opengl es2 \
   -openssl-linked \
   -plugin-sql-sqlite \
-  -rpath \
-  -system-libjpeg \
-  -system-libpng \
-  %{?harfbuzz} \
-  %{?sqlite} \
-  -system-zlib \
+  -system-harfbuzz \
   -system-freetype \
   -system-libpng \
   -system-libjpeg \
   -system-proxies \
   -system-sqlite \
-  -system-zlib
+  -system-zlib \
+  -xkbcommon
 
 %make_build -C qmake all binary \
   QMAKE_STRIP=
