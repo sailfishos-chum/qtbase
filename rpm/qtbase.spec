@@ -40,18 +40,21 @@ BuildRequires: libtiff-devel
 BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(libdrm)
+BuildRequires: pkgconfig(egl)
 BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(freetype2)
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(libsctp)
 BuildRequires: pkgconfig(libpng)
-BuildRequires: pkgconfig(libudev)
-BuildRequires: openssl-devel
+BuildRequires: pkgconfig(udev)
+BuildRequires: pkgconfig(mtdev)
+BuildRequires: pkgconfig(libxslt)
+BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(libpulse) pkgconfig(libpulse-mainloop-glib)
 #BuildRequires: pkgconfig(libinput)
 BuildRequires: pkgconfig(libsystemd)
 %global vulkan 0
 #BuildRequires: pkgconfig(vulkan)
-BuildRequires: libEGL-devel
 BuildRequires: pkgconfig(glesv2)
 BuildRequires: pkgconfig(sqlite3) >= 3.7
 BuildRequires: pkgconfig(harfbuzz) >= 0.9.42
@@ -315,7 +318,7 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %dir %{_opt_qt5_plugindir}/generic/
 %dir %{_opt_qt5_plugindir}/iconengines/
 %dir %{_opt_qt5_plugindir}/imageformats/
-#dir %{_opt_qt5_plugindir}/platforminputcontexts/
+%dir %{_opt_qt5_plugindir}/platforminputcontexts/
 %dir %{_opt_qt5_plugindir}/platforms/
 %dir %{_opt_qt5_plugindir}/platformthemes/
 %dir %{_opt_qt5_plugindir}/printsupport/
@@ -358,7 +361,7 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_headerdir}/QtEglFSDeviceIntegration
 %{_opt_qt5_headerdir}/QtInputSupport
 %{_opt_qt5_headerdir}/QtEdidSupport
-#{_qt5_headerdir}/QtXkbCommonSupport
+%{_opt_qt5_headerdir}/QtXkbCommonSupport
 %{_opt_qt5_archdatadir}/mkspecs/
 %{_opt_qt5_libdir}/libQt5Concurrent.prl
 %{_opt_qt5_libdir}/libQt5Concurrent.so
@@ -380,8 +383,8 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_libdir}/libQt5Test.so
 %{_opt_qt5_libdir}/libQt5Widgets.prl
 %{_opt_qt5_libdir}/libQt5Widgets.so
-#{_qt5_libdir}/libQt5XcbQpa.prl
-#{_qt5_libdir}/libQt5XcbQpa.so
+#{_opt_qt5_libdir}/libQt5XcbQpa.prl
+#{_opt_qt5_libdir}/libQt5XcbQpa.so
 %{_opt_qt5_libdir}/libQt5Xml.prl
 %{_opt_qt5_libdir}/libQt5Xml.so
 %{_opt_qt5_libdir}/libQt5EglFSDeviceIntegration.prl
@@ -412,15 +415,15 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_libdir}/cmake/Qt5EventDispatcherSupport/
 %{_opt_qt5_libdir}/cmake/Qt5FbSupport/
 %{_opt_qt5_libdir}/cmake/Qt5FontDatabaseSupport/
-#{_qt5_libdir}/cmake/Qt5GlxSupport/
+#{_opt_qt5_libdir}/cmake/Qt5GlxSupport/
 %{_opt_qt5_libdir}/cmake/Qt5InputSupport/
 %{_opt_qt5_libdir}/cmake/Qt5KmsSupport/
-#{_qt5_libdir}/cmake/Qt5LinuxAccessibilitySupport/
+#{_opt_qt5_libdir}/cmake/Qt5LinuxAccessibilitySupport/
 %{_opt_qt5_libdir}/cmake/Qt5PlatformCompositorSupport/
 %{_opt_qt5_libdir}/cmake/Qt5ServiceSupport/
 %{_opt_qt5_libdir}/cmake/Qt5ThemeSupport/
-#{_qt5_libdir}/cmake/Qt5XcbQpa/
-#{_qt5_libdir}/cmake/Qt5XkbCommonSupport/
+#{_opt_qt5_libdir}/cmake/Qt5XcbQpa/
+%{_opt_qt5_libdir}/cmake/Qt5XkbCommonSupport/
 %{_opt_qt5_libdir}/metatypes/qt5core_metatypes.json
 %{_opt_qt5_libdir}/metatypes/qt5gui_metatypes.json
 %{_opt_qt5_libdir}/metatypes/qt5widgets_metatypes.json
@@ -446,7 +449,7 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 
 %files private-devel
 %{_opt_qt5_headerdir}/*/%{qt_version}/
-#{_qt5_archdatadir}/mkspecs/modules/qt_lib_*_private.pri
+#{_opt_qt5_archdatadir}/mkspecs/modules/qt_lib_*_private.pri
 
 %files static
 %{_opt_qt5_headerdir}/QtOpenGLExtensions/
@@ -472,14 +475,14 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_libdir}/libQt5FontDatabaseSupport.*a
 %{_opt_qt5_libdir}/libQt5FontDatabaseSupport.prl
 %{_opt_qt5_headerdir}/QtFontDatabaseSupport
-#{_qt5_libdir}/libQt5GlxSupport.*a
-#{_qt5_libdir}/libQt5GlxSupport.prl
-#{_qt5_headerdir}/QtGlxSupport
+#{_opt_qt5_libdir}/libQt5GlxSupport.*a
+#{_opt_qt5_libdir}/libQt5GlxSupport.prl
+#{_opt_qt5_headerdir}/QtGlxSupport
 %{_opt_qt5_libdir}/libQt5InputSupport.*a
 %{_opt_qt5_libdir}/libQt5InputSupport.prl
-#{_qt5_libdir}/libQt5LinuxAccessibilitySupport.*a
-#{_qt5_libdir}/libQt5LinuxAccessibilitySupport.prl
-#{_qt5_headerdir}/QtLinuxAccessibilitySupport
+#{_opt_qt5_libdir}/libQt5LinuxAccessibilitySupport.*a
+#{_opt_qt5_libdir}/libQt5LinuxAccessibilitySupport.prl
+#{_opt_qt5_headerdir}/QtLinuxAccessibilitySupport
 %{_opt_qt5_libdir}/libQt5PlatformCompositorSupport.*a
 %{_opt_qt5_libdir}/libQt5PlatformCompositorSupport.prl
 %{_opt_qt5_headerdir}/QtPlatformCompositorSupport
@@ -494,8 +497,8 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_headerdir}/QtKmsSupport
 %{_opt_qt5_libdir}/libQt5EdidSupport.*a
 %{_opt_qt5_libdir}/libQt5EdidSupport.prl
-#{_qt5_libdir}/libQt5XkbCommonSupport.*a
-#{_qt5_libdir}/libQt5XkbCommonSupport.prl
+%{_opt_qt5_libdir}/libQt5XkbCommonSupport.*a
+%{_opt_qt5_libdir}/libQt5XkbCommonSupport.prl
 %if 0%{?vulkan}
 %{_opt_qt5_headerdir}/QtVulkanSupport/
 %{_opt_qt5_libdir}/cmake/Qt5VulkanSupport/
@@ -508,13 +511,13 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_libdir}/libQt5OpenGL.so.5*
 %{_opt_qt5_libdir}/libQt5PrintSupport.so.5*
 %{_opt_qt5_libdir}/libQt5Widgets.so.5*
-#{_qt5_libdir}/libQt5XcbQpa.so.5*
+#{_opt_qt5_libdir}/libQt5XcbQpa.so.5*
 %{_opt_qt5_plugindir}/generic/libqevdevkeyboardplugin.so
 %{_opt_qt5_plugindir}/generic/libqevdevmouseplugin.so
 %{_opt_qt5_plugindir}/generic/libqevdevtabletplugin.so
 %{_opt_qt5_plugindir}/generic/libqevdevtouchplugin.so
-#{_qt5_plugindir}/generic/libqlibinputplugin.so
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake
+#{_opt_qt5_plugindir}/generic/libqlibinputplugin.so
+#{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake
 %{_opt_qt5_plugindir}/generic/libqtuiotouchplugin.so
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevMousePlugin.cmake
@@ -527,41 +530,41 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake
-#{_qt5_plugindir}/platforminputcontexts/libcomposeplatforminputcontextplugin.so
-#{_qt5_plugindir}/platforminputcontexts/libibusplatforminputcontextplugin.so
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake
+%{_opt_qt5_plugindir}/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+%{_opt_qt5_plugindir}/platforminputcontexts/libibusplatforminputcontextplugin.so
+%{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake
+%{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake
 %{_opt_qt5_libdir}/libQt5EglFSDeviceIntegration.so.5*
 %{_opt_qt5_libdir}/libQt5EglFsKmsSupport.so.5*
 %{_opt_qt5_plugindir}/platforms/libqeglfs.so
 %{_opt_qt5_plugindir}/platforms/libqminimalegl.so
 %dir %{_opt_qt5_plugindir}/egldeviceintegrations/
 %{_opt_qt5_plugindir}/egldeviceintegrations/libqeglfs-kms-integration.so
-#{_qt5_plugindir}/egldeviceintegrations/libqeglfs-x11-integration.so
-#{_qt5_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
+#{_opt_qt5_plugindir}/egldeviceintegrations/libqeglfs-x11-integration.so
+#{_opt_qt5_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
 %{_opt_qt5_plugindir}/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
 %{_opt_qt5_plugindir}/egldeviceintegrations/libqeglfs-emu-integration.so
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsGbmIntegrationPlugin.cmake
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake
+#{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSEmulatorIntegrationPlugin.cmake
 %{_opt_qt5_plugindir}/platforms/libqlinuxfb.so
 %{_opt_qt5_plugindir}/platforms/libqminimal.so
 %{_opt_qt5_plugindir}/platforms/libqoffscreen.so
-#{_qt5_plugindir}/platforms/libqxcb.so
+#{_opt_qt5_plugindir}/platforms/libqxcb.so
 %{_opt_qt5_plugindir}/platforms/libqvnc.so
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QVncIntegrationPlugin.cmake
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
-#{_qt5_plugindir}/xcbglintegrations/libqxcb-glx-integration.so
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
+#{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
+#{_opt_qt5_plugindir}/xcbglintegrations/libqxcb-glx-integration.so
+#{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
 %{_opt_qt5_plugindir}/platformthemes/libqxdgdesktopportal.so
-#{_qt5_plugindir}/platformthemes/libqgtk3.so
+#{_opt_qt5_plugindir}/platformthemes/libqgtk3.so
 %{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake
-#{_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk3ThemePlugin.cmake
+#{_opt_qt5_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk3ThemePlugin.cmake
 %{_opt_qt5_plugindir}/printsupport/libcupsprintersupport.so
 %{_opt_qt5_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake
