@@ -20,6 +20,8 @@ Source1: qtlogging.ini
 Source10: macros.qt5-qtbase
 Source100: qtbase-rpmlintrc
 
+Patch1: 0001-Apply-workaround-used-by-Jolla-for-bin-syncqt.pl.patch
+
 # # Do not check any files in %%{_opt_qt5_plugindir}/platformthemes/ for requires.
 # # Those themes are there for platform integration. If the required libraries are
 # # not there, the platform to integrate with isn't either. Then Qt will just
@@ -127,7 +129,7 @@ Qt5 libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n %{name}-%{version}/upstream
+%autosetup -n %{name}-%{version}/upstream -p1
 
 # # use proper perl interpretter so autodeps work as expected
 # sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \

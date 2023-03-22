@@ -1,0 +1,26 @@
+From 3f907f481387356cf82ebf1b6b2074c1665f2bdb Mon Sep 17 00:00:00 2001
+From: Rinigus <rinigus.git@gmail.com>
+Date: Wed, 22 Mar 2023 09:58:03 +0200
+Subject: [PATCH] Apply workaround used by Jolla for bin/syncqt.pl
+
+Ref: https://forum.sailfishos.org/t/sdk-fails-to-run-perl-while-compiling-on-aarch64/15139/2
+---
+ bin/syncqt.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bin/syncqt.pl b/bin/syncqt.pl
+index 7ede34cf1d..818abc14e5 100755
+--- a/bin/syncqt.pl
++++ b/bin/syncqt.pl
+@@ -686,7 +686,7 @@ sub cleanPath {
+ sub locateSyncProfile
+ {
+     my ($directory) = @_;
+-    $directory = abs_path($directory);
++    $directory = File::Spec->canonpath($directory);
+     while (1) {
+         my $file = $directory."/sync.profile";
+         return $file if (-e $file);
+-- 
+2.39.2
+
