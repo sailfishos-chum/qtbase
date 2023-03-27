@@ -22,14 +22,7 @@ Source100: qtbase-rpmlintrc
 
 Patch1: 0001-Apply-workaround-used-by-Jolla-for-bin-syncqt.pl.patch
 
-# # Do not check any files in %%{_opt_qt5_plugindir}/platformthemes/ for requires.
-# # Those themes are there for platform integration. If the required libraries are
-# # not there, the platform to integrate with isn't either. Then Qt will just
-# # silently ignore the plugin that fails to load. Thus, there is no need to let
-# # RPM drag in gtk3 as a dependency for the GTK+3 dialog support.
-# %global __requires_exclude_from ^%{_opt_qt5_plugindir}/platformthemes/.*$
-# # filter plugin provides
-# %global __provides_exclude_from ^%{_opt_qt5_plugindir}/.*\\.so$
+%{?opt_qt5_default_filter}
 
 BuildRequires: gcc-c++
 BuildRequires: make
@@ -122,6 +115,7 @@ Requires: pkgconfig(zlib)
 # debating whether to do 1 subpkg per library or not -- rex
 %package gui
 Summary: Qt5 GUI-related libraries
+%{?opt_qt5_default_filter}
 Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description gui
