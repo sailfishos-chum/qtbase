@@ -198,7 +198,7 @@ touch .git
 make install INSTALL_ROOT=%{buildroot}
 
 mkdir -p %{buildroot}%{_opt_qt5_datadir}
-install -m644 -p -D %{SOURCE1} %{buildroot}%{_opt_qt5_datadir}/qtlogging.ini
+#install -m644 -p -D %{SOURCE1} %{buildroot}%{_opt_qt5_datadir}/qtlogging.ini
 
 # Qt5.pc
 mkdir -p %{buildroot}%{_opt_qt5_libdir}/pkgconfig
@@ -300,7 +300,7 @@ rm -f %{buildroot}%{_opt_qt5_libdir}/libQt5Bootstrap.prl
 %dir %{_opt_qt5_prefix}/
 %dir %{_opt_qt5_archdatadir}/
 %dir %{_opt_qt5_datadir}/
-%{_opt_qt5_datadir}/qtlogging.ini
+#{_opt_qt5_datadir}/qtlogging.ini
 %dir %{_opt_qt5_libexecdir}/
 %dir %{_opt_qt5_plugindir}/
 %dir %{_opt_qt5_plugindir}/bearer/
