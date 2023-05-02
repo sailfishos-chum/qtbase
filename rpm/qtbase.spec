@@ -4,11 +4,11 @@
 %global qt_module qtbase
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_opt_qt5_sysconfdir}/rpm; echo $d)
 
-%global qt_version 5.15.8
+%global qt_version 5.15.9
 
 Name: opt-qt5-qtbase
 Summary: Qt5 - QtBase components
-Version: %{qt_version}
+Version: 5.15.9+kde151
 Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -223,7 +223,7 @@ translationdir=%{_opt_qt5_translationdir}
 
 Name: Qt5
 Description: Qt5 Configuration
-Version: 5.15.8
+Version: 5.15.9+kde151
 EOF
 
 # rpm macros
